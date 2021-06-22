@@ -2,25 +2,104 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <style>
+      table, th, td {
+        border: 2px solid black;
+        border-collapse: collapse;
+        font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+      }
+      th, td {
+        padding: 10px;
+      }
+    </style>
     <title>Documentation</title>
   </head>
   <body>
     <h1>myFlix</h1>
-    <p>
-      myFlix API is designed to return specific data about movies to the user.
-      This includes:
-    </p>
-    <p>- A list of movies</p>
-    <p>
-      - The genre, director, image URL, description about a single movie by
-      title to the user
-    </p>
-    <p>- Description of the genre by name/title</p>
-    <p>- Personal Information about the director</p>
-    <p>
-      myFlix API will also allow users to register, deregister, update their
-      information, and add and remove movies to and from their list of
-      favorites.
-    </p>
+    <table style="width:100%">
+      <tr>
+        <th>Request</th>
+        <th>URL</th>
+        <th>HTTP Method</th>
+        <th>Response</th>
+      </tr>
+      <tr>
+        <td>Get list of movies</td>
+        <td>/movies</td>
+        <td>GET</td>
+        <td>A JSON object holding data about all the movies</td>
+      </tr>
+      <tr>
+        <td>Get data about movie by title</td>
+        <td>/movies/:title</td>
+        <td>GET</td>
+        <td>A JSON object holding data about a single movie, containing description, genre, director, image, and if it was featured or not.<br>
+        Example:
+        <br>{title: "Best Movie Ever",
+        <br> description: {
+        <br> This is the best movie ever
+        <br> genre: Thriller
+        <br> director: John Doe
+        <br> This was a featured film
+        <br> *insert image here*
+        </td>
+      </tr>
+      <tr>
+        <td>Get list of genres</td>
+        <td>/genres</td>
+        <td>GET</td>
+        <td>A JSON object holding data about genres<br>
+        Example:
+        <br>Genre: Thriller
+        <br>Description: This would describe the genre
+        </td>
+      </tr>
+      <tr>
+        <td>Get data about a director (bio, birth year, death year)</td>
+        <td>/directors/:name</td>
+        <td>GET</td>
+        <td>A JSON object holding data about a single director, containing the name, bio, birth year, and death year <br>
+        Example:
+        <br>Name: "John Doe",
+        <br>Bio: Bio
+        <br>Birth Year: "01/01/1900"
+        <br>Death Year: "01/01/2000"
+        </td>
+      </tr>
+        <tr>
+        <td>Allow new users to register</td>
+        <td>/users/registration</td>
+        <td>POST</td>
+        <td>A JSON object holding data about the user that was added <br>
+        Example:
+        <br>Name: "Jane",
+        <br>Username: "Jane1"
+        </td>
+      </tr>
+        <tr>
+        <td>Allow users to update user info (username)</td>
+        <td>/users/:user/update</td>
+        <td>PUT</td>
+        <td>Show a message indicating the username was changed</td>
+      </tr>
+        <tr>
+        <td>Allow users to add movie to their list of favorites</td>
+        <td>/users/:user/favorites</td>
+        <td>POST</td>
+        <td>Show a message indicating the movie has been added </td>
+      </tr>
+        <tr>
+        <td>Allow users to remove movie from their list of favorites</td>
+        <td>/users/:user/favorites</td>
+        <td>DELETE</td>
+        <td>Show a message indicating whether the movie was successfully removed </td>
+      </tr>
+        <tr>
+        <td>Allow users to deregister</td>
+        <td>/users/:user/update</td>
+        <td>DELETE</td>
+        <td>Show a message indicating whether the email was successfully removed</td>
+      </tr>
+    </table>
   </body>
 </html>

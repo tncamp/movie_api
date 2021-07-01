@@ -1,229 +1,222 @@
 const express = require('express');
-      morgan = require('morgan');
-      bodyParser = require('body-parser');
-
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const uuid = require('uuid');
 const app = express();
+
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+
+const movies = Models.movie;
+const users = Models.user;
+const directors = Models.director;
+const genres = Models.genre;
+
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
+
 app.use(morgan('common'));
 app.use(bodyParser.json());
-
-let movies = [
-  {
-    title : 'Joker',
-    director : 'Todd Phillips',
-    genres : 'Psychological Thriller'
-  },
-
-  {
-    title : 'The Shawshank Redemption',
-    director : 'Frank Darabont',
-    genres : 'Drama'
-  },
-
-  {
-    title : 'Spirited Away',
-    director : 'Hayao Miyazaki',
-    genres : 'Anime'
-  },
-
-  {
-    title : 'Kingsman: The Secret Service',
-    director : 'Matthew Vaughn',
-    genres : 'Action'
-  },
-
-  {
-    title : 'The Shining',
-    director : 'Stanley Kubrick',
-    genres : 'Horror'
-  },
-
-  {
-    title : 'Blow',
-    director : 'Ted Demme',
-    genres : 'Drama'
-  },
-
-  {
-    title : 'Step Brothers',
-    director : 'Adam McKay',
-    genres : 'Comedy'
-  },
-
-  {
-    title : 'Bridesmaids',
-    director : 'Paul Feig',
-    genres : 'Comedy'
-  },
-
-  {
-    title : 'Butterfly Effect',
-    director : 'Eric Bress',
-    genres : 'Psychological Thriller'
-  },
-
-  {
-    title : 'Saving Private Ryan',
-    director : 'Steven Spielberg',
-    genres : 'Action'
-
-  }
-];
-
-let directors = [
-  {
-    name : 'Todd Phillips',
-    bio : 'Todd Phillips is a film director, producer, screenwriter, and actor.',
-    born : 'December 20, 1970'
-
-  },
-
-  {
-    name : 'Frank Darabont',
-    bio : 'Frank Darabont is a Hungarian-American producer, film director, and screenwriter.',
-    born : 'January 28, 1959'
-  },
-
-  {
-    name : 'Hayao Miyazaki',
-    bio : 'Hayao Miyazaki is a Japanese author, animator, producer, director, screenwriter and artist.',
-    born : 'January 5, 1941'
-  },
-
-  {
-    name : 'Matthew Vaughn',
-    bio : 'Matthew Vaughn is a film producer and director',
-    born : 'March 7, 1971'
-  },
-
-  {
-    name : 'Stanley Kubrick',
-    bio : 'Stanley Kubrick was an American screenwriter, director, producer, and photographer',
-    born : 'July 26, 1928',
-    death : 'March 7, 1999'
-  },
-
-  {
-    name : 'Ted Demme',
-    bio : 'Edward "Ted" Demme was an American actor, director, and producer',
-    born : 'October 26, 1963',
-    death : 'January 13, 2002'
-  },
-
-  {
-    name : 'Adam McKay',
-    bio : 'Adam McKay is a comedian, screenwriter, director and producer',
-    born : 'April 17, 1968'
-  },
-
-  {
-    name : 'Paul Feig',
-    bio : 'Paul Feig is an American filmmaker and actor',
-    born : 'September 17, 1962'
-  },
-
-  {
-    name : 'Eric Bress',
-    bio : 'Eric Bress is screenwriter, director, producer, and actor.',
-    born : 'January 1, 1953'
-  },
-  {
-    name : 'Steven Spielberg',
-    bio : 'Steven Spielberg is a famous American film director, screenwriter, and producer.',
-    born : 'December 18, 1946'
-  }
-];
-
-let genres = [
-  {
-    category: 'Psychological Thriller',
-    description: 'A psycholocial thriller blends elements of drama, mystery, and paranoia. It can often have a sense of a "dissolving sense of reality".'
-  },
-
-  {
-    category: 'Drama',
-    description: 'A drama relies on the relationships and emotions of realistic characters. '
-  },
-
-  {
-    category: 'Anime',
-    description: 'Anime is a genre involving hand-drawn and computer animations originating in Japan. '
-  },
-
-  {
-    category: 'Horror',
-    description: 'A horror is a genre whose purpose is to instill fear, dread, and terror in the viewer.'
-  },
-
-  {
-    category: 'Comedy',
-    description: 'A comedy is intended to be amusing, humorous, and induce laughter.'
-  },
-
-  {
-    category: 'Action',
-    description: 'An action film typically includes violence, physical feats, and fighting.'
-  }
-];
-
+app.use(bodyParser.urlencoded({ extended: true}));
 app.use(express.static('public'));
 
-//GET requests
 app.get('/documentation', (req, res) => {
   res.sendFile('public/documentation.html', { root: __dirname });
 });
 
+//GET requests
+app.get('/', (req, res) => {
+  res.send('Welcome to myFlix!');
+});
+
 //get list of all movies
 app.get('/movies', (req, res) => {
-  res.json(movies);
+  movies.find()
+    .then((movie) => {
+      res.status(201).json(movie);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 //get movie by title
-app.get('/movies/:title', (req, res) => {
-  res.json(movies.find((movies) => {
-    return movies.title === req.params.title
-  }));
-})
+app.get('/movies/:Title', (req, res) => {
+  movies.findOne({ Title: req.params.Title})
+  .then((movie) => {
+    res.json(movie);
+  })
+    .catch((err) => {
+      console.error(err);
+    });
+  });
 
 //get list of directors
 app.get('/directors', (req, res) => {
-  res.json(directors);
+  directors.find()
+  .then((directors) => {
+    res.status(201).json(directors);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  });
 });
 
 //get director by name
-app.get('/directors/:name', (req, res) => {
-  res.json(directors.find((directors) => {
-    return directors.name === req.params.name
-  }));
-})
+app.get('/directors/:Name', (req, res) => {
+  directors.findOne({ Name: req.params.Name })
+  .then((director) => {
+    res.json(director);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  });
+});
 
 //get list of genres
 app.get('/genres', (req, res) => {
-  res.json(genres)
+  genres.find()
+  .then((genre) => {
+    res.status(201).json(genre);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  });
 });
 
-//allow new users to register
-app.post('/users/:user/registration' , (req, res) => {
-  res.send('User successfully created!')
+//get genre by name
+app.get('/genres/:Name', (req, res) => {
+  genres.findOne({ Name: req.params.Name })
+  .then ((genre) => {
+    res.json(genre);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  });
 });
 
-//allow users to deregister
-app.delete('/users/:user/update' , (req, res) => {
-  res.send('User was successfully removed!')
+//allow users to register
+app.post('/users' , (req, res) => {
+  users.findOne({ Username: req.body.Username})
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + ' already exists!');
+      } else {
+        users
+          .create({
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          .then((user) =>{res.status(201).json(user) })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+        })
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
 });
 
-//allow users to update username
-app.put('/users/:user/update' , (req, res) => {
-  res.send('Username was successfully changed')
+//get all users
+app.get('/users', (req, res) => {
+  users.find()
+    .then((users) => {
+      res.status(201).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
-//allow users to add movie to favorites
-app.post('/users/:user/favorites' , (req, res) => {
-  res.send('Added to favorites')
+//get a user by username
+app.get('/users/:Username', (req, res) => {
+  users.findOne({ Username: req.params.Username })
+  .then((user) => {
+    res.json(user);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  });
+});
+
+//allow users to update info
+app.put('/users/:Username', (req, res) => {
+  users.findOneAndUpdate({ Username: req.params.Username }, { $set:
+    {
+      Username: req.body.Username,
+      Password: req.body.Password,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday
+    },
+  },
+  { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if(err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
+// Add a movie to a user's list of favorites
+app.post('/users/:Username/favorites/:_id', (req, res) => {
+  users.findOneAndUpdate({ Username: req.params.Username }, {
+     $push: { FavoriteMovies: req.params._id }
+   },
+   { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
 });
 
 //allow users to remove movie from favorites
-app.delete('/users/:user/favorites' , (req , res) => {
-  res.send('Removed from favorites')
+app.delete('/users/:Username/favorites/:_id', (req, res) => {
+  users.findOneAndUpdate({ Username: req.params.Username }, {
+     $pull: { FavoriteMovies: req.params._id }
+   },
+   { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
+//allow users to deregister
+app.delete('/users/:Username', (req, res) => {
+  users.findOneAndRemove({ Username: req.params.Username })
+  .then((user) => {
+    if(!user) {
+      res.status(400).send(req.params.Username + ' was not found');
+    } else {
+      res.status(200).send(req.params.Username + ' was removed');
+    }
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  });
 });
 
 //Error handling

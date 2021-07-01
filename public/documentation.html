@@ -31,74 +31,126 @@
       </tr>
       <tr>
         <td>Get data about movie by title</td>
-        <td>/movies/:title</td>
+        <td>/movies/:Title</td>
         <td>GET</td>
         <td>A JSON object holding data about a single movie, containing description, genre, director, image, and if it was featured or not.<br>
         Example:
-        <br>{title: "Best Movie Ever",
-        <br> description: {
-        <br> This is the best movie ever
-        <br> genre: Thriller
-        <br> director: John Doe
-        <br> This was a featured film
-        <br> *insert image here*
+        <br> {
+        <br>    "Genre": [
+        <br>        "12345678abc"
+        <br>    ],
+        <br>    "Director": [
+        <br>        "abc12345678"
+        <br>    ],
+        <br>    "_id": "00000000456",
+        <br>    "Title": "Best Movie Ever",
+        <br>    "Description": "This is the best movie ever.",
+        <br>    "ImagePath": "*insert image path here*",
+        <br>    "Featured": true
+        <br> }
         </td>
       </tr>
       <tr>
-        <td>Get list of genres</td>
+        <td>GET list of genres</td>
         <td>/genres</td>
         <td>GET</td>
-        <td>A JSON object holding data about genres<br>
-        Example:
-        <br>Genre: Thriller
-        <br>Description: This would describe the genre
+        <td>A JSON object holding a list of genres.
         </td>
       </tr>
       <tr>
-        <td>Get data about a director (bio, birth year, death year)</td>
-        <td>/directors/:name</td>
+        <td>GET genre by name</td>
+        <td>/genres/:Name</td>
+        <td>GET</td>
+        <td>A JSON object holding data about genres.<br>
+          Example:
+          <br>Genre: Thriller
+          <br>Description: This would describe the a Thriller.
+        </td>
+      </tr>
+      <tr>
+        <td>GET list of directors</td>
+        <td>/directors</td>
+        <td>GET</td>
+        <td>A JSON object holding a list of directors.
+        </td>
+      </tr>
+      <tr>
+        <td>GET data about a certain director (bio, birth year, death year)</td>
+        <td>/directors/:Name</td>
         <td>GET</td>
         <td>A JSON object holding data about a single director, containing the name, bio, birth year, and death year <br>
         Example:
-        <br>Name: "John Doe",
-        <br>Bio: Bio
-        <br>Birth Year: "01/01/1900"
-        <br>Death Year: "01/01/2000"
+        <br>"_id": "345rgtdt5efgd",
+        <br>"Name": "John Doe",
+        <br>"Bio": "Bio",
+        <br>"Born": "01/01/1900",
+        <br>"Died": "01/01/2000"
         </td>
       </tr>
-        <tr>
+      <tr>
         <td>Allow new users to register</td>
-        <td>/users/registration</td>
+        <td>/users</td>
         <td>POST</td>
-        <td>A JSON object holding data about the user that was added <br>
+        <td>Show a message that indicates if the registration was successful, if not successful will return error with required info.<br>
         Example:
-        <br>Name: "Jane",
-        <br>Username: "Jane1"
+        <br>If Username exists:
+        <br>"harry123 already exists!"
+        <br>If required info is missing:
+        <br>"Username" is required, "Password" is required
         </td>
       </tr>
         <tr>
-        <td>Allow users to update user info (username)</td>
-        <td>/users/:user/update</td>
+        <td>Allow users to update user info</td>
+        <td>/users/:Username</td>
         <td>PUT</td>
-        <td>Show a message indicating the username was changed</td>
+        <td>A JSON object with data about what info in the user document should be updated</td>
       </tr>
-        <tr>
+      <tr>
+        <td>GET a list of users</td>
+        <td>/users</td>
+        <td>GET</td>
+        <td>A JSON object containing a list of all registered users.<br>
+        </td>
+      </tr>
+      <tr>
+        <td>GET a user by Username</td>
+        <td>/users/:Username</td>
+        <td>GET</td>
+        <td>A JSON object holding data about a certain user.<br>
+          Example:
+        <br>"_id" : "4356873496uefg98h34985y",
+        <br>"Username": "harry123",
+        <br>"Password": "123",
+        <br>"Email": "harry@gmail.com",
+        <br>"Birthday" : "2000-01-01"
+        <br>"FavoriteMovies" : [34985690gvfdg980],
+        </td>
+      </tr>
+      <tr>
         <td>Allow users to add movie to their list of favorites</td>
-        <td>/users/:user/favorites</td>
+        <td>/users/:Username/favorites/:_id</td>
         <td>POST</td>
-        <td>Show a message indicating the movie has been added </td>
+        <td>Return a JSON object with the movie ID added to FavoriteMovies.<br>
+        Example:
+        <br>  "FavoriteMovies": ["60d90b1b0adf9ce7eb6f7d25"],
+        <br>  "_id": "60dcea4cb4b883b78507187f",
+        <br>  "Username": "johndoe",
+        <br>  "Password": "test123",
+        <br>  "Email": "john@gmail.com",
+        <br>  "Birthday": "2000-01-01T00:00:00.000Z"
+        </td>
       </tr>
-        <tr>
+      <tr>
         <td>Allow users to remove movie from their list of favorites</td>
-        <td>/users/:user/favorites</td>
+        <td>/users/:Username/favorites/:_id</td>
         <td>DELETE</td>
-        <td>Show a message indicating whether the movie was successfully removed </td>
+        <td>Show a message indicating whether the movie was successfully removed. </td>
       </tr>
-        <tr>
+      <tr>
         <td>Allow users to deregister</td>
-        <td>/users/:user/update</td>
+        <td>/users/:Username</td>
         <td>DELETE</td>
-        <td>Show a message indicating whether the email was successfully removed</td>
+        <td>Show a message indicating whether the username was successfully removed or not found.</td>
       </tr>
     </table>
   </body>

@@ -19,6 +19,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(express.static('public'));
 
+const cors = require('cors');
+app.use(cors());
+const { check, validationResult } = require('express-validator');
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
@@ -104,7 +107,20 @@ app.get('/genres/:Name', passport.authenticate('jwt', { session: false }), (req,
 });
 
 //allow users to register
-app.post('/users' , passport.authenticate('jwt', { session: false }), (req, res) => {
+app.post('/users' ,
+[
+  check('Username', 'Username is required').isLength({min: 8}),
+  check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('Password', 'Password is required').not().isEmpty(),
+  check('Email', 'Email is not valid').isEmail()
+], (req, res) => {
+// checks the validation object for errors
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+  //  passport.authenticate('jwt', { session: false }), (req, res) => {
+  let hashedPassword = users.hashPassword(req.body.Password);
   users.findOne({ Username: req.body.Username})
     .then((user) => {
       if (user) {
@@ -230,6 +246,7 @@ app.use((err, req, res, next) => {
 });
 
 //listens for requests
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0', () => {
+  console.log('Your app is listening on Port ' + port);
 });

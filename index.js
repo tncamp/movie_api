@@ -1,7 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const uuid = require('uuid');
 const app = express();
 
 const mongoose = require('mongoose');
@@ -30,7 +29,6 @@ app.get('/documentation', (req, res) => {
   res.sendFile('public/documentation.html', { root: __dirname });
 });
 
-//GET requests
 app.get('/', (req, res) => {
   res.send('Welcome to myFlix!');
 });
@@ -119,7 +117,6 @@ app.post('/users' ,
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-  //  passport.authenticate('jwt', { session: false }), (req, res) => {
   let hashedPassword = users.hashPassword(req.body.Password);
   users.findOne({ Username: req.body.Username})
     .then((user) => {

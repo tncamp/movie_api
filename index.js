@@ -11,7 +11,9 @@ const users = Models.user;
 const directors = Models.director;
 const genres = Models.genre;
 
-mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
+//mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
+mongoose.connect( process.env.Connection_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
+
 
 app.use(morgan('common'));
 app.use(bodyParser.json());

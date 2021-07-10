@@ -1,31 +1,30 @@
 const express = require('express');
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
-const app = express();
+      morgan = require('morgan');
+      bodyParser = require('body-parser');
+      app = express();
+      mongoose = require('mongoose');
+      passport = require('passport');
+      require('./passport');
 
-const mongoose = require('mongoose');
+const cors = require('cors');
+app.use(cors());
+const { check, validationResult } = require('express-validator');
+
 const Models = require('./models.js');
-
 const movies = Models.movie;
 const users = Models.user;
 const directors = Models.director;
 const genres = Models.genre;
-
-//mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
-mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
-
 
 app.use(morgan('common'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(express.static('public'));
 
-const cors = require('cors');
-app.use(cors());
-const { check, validationResult } = require('express-validator');
 let auth = require('./auth')(app);
-const passport = require('passport');
-require('./passport');
+
+//mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
+mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
 
 app.get('/documentation', (req, res) => {
   res.sendFile('public/documentation.html', { root: __dirname });
@@ -114,11 +113,12 @@ app.post('/users' ,
   check('Password', 'Password is required').not().isEmpty(),
   check('Email', 'Email is not valid').isEmail()
 ], (req, res) => {
-// checks the validation object for errors
   let errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
+
   let hashedPassword = users.hashPassword(req.body.Password);
   users.findOne({ Username: req.body.Username})
     .then((user) => {

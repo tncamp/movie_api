@@ -6,25 +6,25 @@ const express = require('express');
       passport = require('passport');
       require('./passport');
 
-const cors = require('cors');
-app.use(cors());
-const { check, validationResult } = require('express-validator');
-
 const Models = require('./models.js');
 const movies = Models.movie;
 const users = Models.user;
 const directors = Models.director;
 const genres = Models.genre;
 
+const cors = require('cors');
+app.use(cors());
+const { check, validationResult } = require('express-validator');
+
 app.use(morgan('common'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true}));
+//app.use(bodyParser.urlencoded({ extended: true}));
 app.use(express.static('public'));
 
 let auth = require('./auth')(app);
 
 //mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
-mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
+mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true});
 
 app.get('/documentation', (req, res) => {
   res.sendFile('public/documentation.html', { root: __dirname });
@@ -170,7 +170,7 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (r
 });
 
 //allow users to update info
-app.put('/users/:Username' ,
+app.put('/users/:Username' , passport.authenticate('jwt', { session: false}),
 [
   check('Username', 'Username is required').isLength({min: 3}),
   check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),

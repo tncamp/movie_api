@@ -1,9 +1,9 @@
 const express = require('express');
       morgan = require('morgan');
       bodyParser = require('body-parser');
-      app = express();
       mongoose = require('mongoose');
       passport = require('passport');
+      app = express();
       require('./passport');
 
 const Models = require('./models.js');
@@ -12,15 +12,14 @@ const users = Models.user;
 const directors = Models.director;
 const genres = Models.genre;
 
-const cors = require('cors');
-app.use(cors());
-const { check, validationResult } = require('express-validator');
+const cors = require('cors'),
+  { check, validationResult } = require('express-validator');
 
 app.use(morgan('common'));
 app.use(bodyParser.json());
-//app.use(bodyParser.urlencoded({ extended: true}));
 app.use(express.static('public'));
-
+app.use(cors());
+    
 let auth = require('./auth')(app);
 
 //mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});

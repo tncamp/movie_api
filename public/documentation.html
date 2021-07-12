@@ -16,6 +16,7 @@
   </head>
   <body>
     <h1>myFlix</h1>
+    <p>This web application integrates data from a REST API and allows users to register, update their info, add movies to their favorites and read about movies, genres and directors.</p>
     <table style="width:100%">
       <tr>
         <th>Request</th>
@@ -151,6 +152,12 @@
         <td>/users/:Username</td>
         <td>DELETE</td>
         <td>Show a message indicating whether the username was successfully removed or not found.</td>
+      </tr>
+      <tr>
+        <td>Allow users to login</td>
+        <td>/users/login</td>
+        <td>POST</td>
+        <td>Return a JSON object with the data of user that has logged in and include a JWT token to authenticate user.</td>
       </tr>
     </table>
   </body>

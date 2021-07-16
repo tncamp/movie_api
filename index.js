@@ -19,7 +19,7 @@ app.use(morgan('common'));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(cors());
-    
+
 let auth = require('./auth')(app);
 
 //mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
@@ -127,7 +127,7 @@ app.post('/users' ,
         users
           .create({
             Username: req.body.Username,
-            Password: req.body.Password,
+            Password: hashedPassword,
             Email: req.body.Email,
             Birthday: req.body.Birthday
           })
@@ -185,7 +185,7 @@ app.put('/users/:Username' , passport.authenticate('jwt', { session: false}),
   users.findOneAndUpdate({ Username: req.params.Username }, { $set:
     {
       Username: req.body.Username,
-      Password: req.body.Password,
+      Password: hashedPassword,
       Email: req.body.Email,
       Birthday: req.body.Birthday
     },
